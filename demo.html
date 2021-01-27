@@ -57,6 +57,22 @@
         </div>
 
         <div class="demo">
+            <h2>Single touch mode</h2>
+            <div class="demo-area">
+                <div class="demo-element" id="oneFingerExample">Drag me with one finger!</div>
+            </div>
+            <pre class="code">
+    TouchTransform.attach(document.querySelector('#oneFingerExample'),{
+        singleTouch: true,
+    });</pre>
+            <script>
+                TouchTransform.attach(document.querySelector('#oneFingerExample'),{
+                    singleTouch: true,
+                });
+            </script>
+        </div>
+
+        <div class="demo">
             <h2>Custom target</h2>
             <div class="demo-area" id="area">
                 <div class="demo-element" id="customTarget"><div>Drag me or the area around me!</div></div>
@@ -68,7 +84,6 @@
     });</pre>
             <script>
                 TouchTransform.attach(document.querySelector('#area'),{
-                    singleTouch: true,
                     target: document.querySelector('#customTarget')
                 });
             </script>
