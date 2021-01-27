@@ -2,7 +2,7 @@
 TouchTransform is a simple to use library for utilizing multi-touch gestures and mouse for visual transforms (Translation, rotation and scaling) based on well-established user interactions such as pinch zooming, two finger rotation and movement (ie. translation).
 TouchTransform can perform the transforms automatically through CSS3 transforms, or you can get the data yourself through the `onUpdate` callback if you wish to perform your own transformation (ie. if you are doing your own rendering through HTML5 canvas or would like to use the data for another purpose).
 
-Check out the [demo]()!
+Check out the [demo](https://ejth.github.io/touch-transform/demo.html)!
 
 ## Usage
 The simplest way to use TouchTransform is to include the script and then call the attach function:
