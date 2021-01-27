@@ -167,8 +167,6 @@
         var idx = ongoingTouchIndexById(touches[i].identifier);
         if (idx >= 0) {
           ongoingTouches.splice(idx, 1, copyTouch(touches[i]));  // swap in the new touch record
-        } else {
-          
         }
       }
       if(currentElement) evt.preventDefault();
