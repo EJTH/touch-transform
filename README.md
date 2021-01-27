@@ -40,6 +40,9 @@ By default scaling is performed with click+scroll and rotation is performed with
 I personally don't like single touch transform in the browser. And for some purposes its not what you want at all!
 For those who wants users to still pan using one touch gestures, you can enable single touch mode by setting the `singleTouch` option to `true`.
 
+#### minScale & maxScale
+Use these settings to clamp the scale. Defaults are min: 0.01, max: 100.
+
 ```javascript
 TouchTransform.attach(document.body, {
     target: false,

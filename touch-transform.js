@@ -23,6 +23,8 @@
     // Current mouse scale (shift+scroll).
     var mouseScale = 1;
 
+    var mouseScaleFactor = 0;
+
     // Attached elements acting as controls.
     var attachedElements = [];
 
@@ -152,7 +154,7 @@
         mouseRot += Math.sign(evt.deltaY);
       }
       if(scrollMode == 'scale'){
-        mouseScale += Math.sign(evt.deltaY) * 0.01;
+        mouseScaleFactor += (Math.sign(evt.deltaY) * ((mouseScaleFactor * mouseScaleFactor) + 0.005));
       }
     }
     
@@ -287,6 +289,7 @@
 
         var state = isTouch ? getTouchTransformState() : getMouseTransformState();
 
+
         applyCSSTransform(opt.target, state);
         if(opt.onUpdate){
             var css = buildCSSTransform(opt.target.__touchTransformInfo);
@@ -316,6 +319,11 @@
       
       var scale = state.dist && lastState.dist ? targetInfo.scale * (state.dist / lastState.dist) : targetInfo.scale;
       
+      // clamp scale
+      var min = currentElement.__touchTransformOptions.minScale || 0.1;
+      var max = currentElement.__touchTransformOptions.maxScale || 100;
+      scale = Math.max(min, Math.min(max, scale));
+
       target.__touchTransformInfo = {
         translation: pos,
         rotation: rotation,
@@ -333,6 +341,10 @@
      * Get input state for mouse interaction
      */
     function getMouseTransformState(){
+      if(mouseScaleFactor != 0){
+        mouseScale += mouseScale * mouseScaleFactor;
+        mouseScaleFactor *= 0.5;
+      }
       return {
         rot: mouseRot,
         pos: mousePos,
@@ -499,6 +511,7 @@
     window.addEventListener('touchmove', handleTouchMove, { passive:false });
     window.addEventListener('touchend', handleTouchEnd, false);
     window.addEventListener('touchcancel', handleTouchCancel, false);
+
     // Attach mouse event Handlers.
     window.addEventListener('mousedown', handleMouseDown, { passive:false });
     window.addEventListener('mouseup', handleMouseUp, false);
