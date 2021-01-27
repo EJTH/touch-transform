@@ -69,10 +69,8 @@
       mousePos = {clientX: evt.clientX, clientY: evt.clientY};
       if(!currentElement){
         var element = document.elementFromPoint(point.clientX, point.clientY);
-        console.log(element);
         startMouseTransform(element);
       }
-      console.log('click');
     }
     /**
      * Handle mouse up event
