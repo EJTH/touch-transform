@@ -47,7 +47,6 @@
      * @param {*} evt 
      */
     function handleTouchStart(evt) {
-      //evt.preventDefault();
       var touches = evt.changedTouches;
       for (var i = 0; i < touches.length; i++) {
         ongoingTouches.push(copyTouch(touches[i]));
@@ -55,7 +54,9 @@
       if(ongoingTouches.length == 2 && !currentElement){
         var point = getMedianPoint();
         var element = document.elementFromPoint(point.clientX, point.clientY);
-        startMultiTouchTransform(element);
+        if(startMultiTouchTransform(element)){
+            evt.preventDefault();
+        };
       }
     }
 
@@ -69,7 +70,9 @@
       mousePos = {clientX: evt.clientX, clientY: evt.clientY};
       if(!currentElement){
         var element = document.elementFromPoint(point.clientX, point.clientY);
-        startMouseTransform(element);
+        if(startMouseTransform(element)){
+            evt.preventDefault();
+        }
       }
     }
     /**
@@ -235,6 +238,8 @@
       currentElement = element;
 
       if(!scrollMode) scrollMode = getDefaultScrollMode();
+
+      return true;
     }
 
     /**
@@ -260,6 +265,8 @@
       }
       lastState = getTouchTransformState();
       currentElement = element;
+      
+      return true;
     }
 
     /**
@@ -478,13 +485,13 @@
     }
 
     // Attach touch event handlers.
-    window.addEventListener('touchstart', handleTouchStart, false);
-    window.addEventListener('touchmove', handleTouchMove, false);
+    window.addEventListener('touchstart', handleTouchStart,  { passive:false });
+    window.addEventListener('touchmove', handleTouchMove);
     window.addEventListener('touchend', handleTouchEnd, false);
     window.addEventListener('touchcancel', handleTouchCancel, false);
 
     // Attach mouse event Handlers.
-    window.addEventListener('mousedown', handleMouseDown, false);
+    window.addEventListener('mousedown', handleMouseDown, { passive:false });
     window.addEventListener('mouseup', handleMouseUp, false);
     window.addEventListener('mousemove', handleMouseMove, false);
     window.addEventListener('keydown', handleKeyDown, false);
