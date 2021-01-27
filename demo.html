@@ -79,7 +79,6 @@
             </div>
             <pre class="code">
     TouchTransform.attach(document.querySelector('#area'),{
-        singleTouch: true,
         target: document.querySelector('#customTarget')
     });</pre>
             <script>
@@ -103,7 +102,6 @@
             <pre class="code">
     TouchTransform.attach(document.querySelector('#updateExample'),{
         target: false,
-        singleTouch: true,
         onUpdate: function(cssTransform, transformData){
             document.querySelector('#debugOutput').innerText = cssTransform;
             console.log(transformData);
