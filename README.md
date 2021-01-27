@@ -34,7 +34,7 @@ If you only want to recieve the transformation data for your own usage, you can 
 ```javascript
 TouchTransform.attach(document.body, {
     target: false,
-    onUpdate: function(cssTransform, tranformData){
+    onUpdate: function(cssTransform, transformData){
         // Example String: 'translate(0px,0px) rotate(45deg) scale(1.5)'
         console.log(cssTransform);
         
@@ -43,6 +43,9 @@ TouchTransform.attach(document.body, {
     }
 });
 ```
+
+### Rotate & scale with mouse scroll
+By default scaling is performed with click+scroll and rotation is performed with click+shift+scroll. If you wish to change this behaviour you can do so with the `scaleKey` and `rotateKey` options. See [MDN Page on Key Values](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values) for valid values.
 
 ## Module support
 This library supports AMD if define exists, otherwise it will be available in the window global object.
