@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="touch-transform.js"></script>
+        <style>
+            html, body {
+                font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+                font-size: 1.1em;
+            }
+            body {
+                padding: 1vh 10vw;
+            }
+            pre {
+                border: 1px solid black;
+                width: 100%;
+                padding: 1vw;
+                box-sizing: border-box;
+            }
+            .demo-area {
+                width: 100%;
+                height: 80vh;
+                background: #aaa;
+                overflow: hidden;
+                position:relative;
+            }
+            .demo-element {
+                margin: -16vw 0 0 -16vw;
+                width: 32vw;
+                height: 32vw;
+                background: greenyellow;
+                position:absolute;
+                top: 50%;
+                left: 50%;
+                line-height: 32vw;
+                text-align: center;
+                user-select: none;
+            }
+            .demo-element div {
+                display: inline-block; 
+                line-height:30px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="demo">
+            <h2>Basic Usage</h2>
+            <div class="demo-area">
+                <div class="demo-element" id="basicExample">Drag me!</div>
+            </div>
+            <pre class="code">
+    TouchTransform.attach(document.querySelector('#basicExample'));</pre>
+            <script>
+                TouchTransform.attach(document.querySelector('#basicExample'));
+            </script>
+        </div>
+
+        <div class="demo">
+            <h2>Custom target</h2>
+            <div class="demo-area" id="area">
+                <div class="demo-element" id="customTarget"><div>Drag me or the area around me!</div></div>
+            </div>
+            <pre class="code">
+    TouchTransform.attach(document.querySelector('#area'),{
+        target: document.querySelector('#customTarget')
+    });</pre>
+            <script>
+                TouchTransform.attach(document.querySelector('#area'),{
+                    target: document.querySelector('#customTarget')
+                });
+            </script>
+        </div>
+
+        <div class="demo">
+            <h2>Using onUpdate and no target</h2>
+            <div class="demo-area">
+                <div class="demo-element" id="updateExample">
+                    <div>
+                        Drag me!
+                        <br />
+                        <span class="debug" id="debugOutput"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <pre class="code">
+    TouchTransform.attach(document.querySelector('#updateExample'),{
+        target: false,
+        onUpdate: function(cssTransform, transformData){
+            document.querySelector('#debugOutput').innerText = cssTransform;
+            console.log(transformData);
+        }
+    });</pre>
+            <script>
+                TouchTransform.attach(document.querySelector('#updateExample'),{
+                    target: false,
+                    onUpdate: function(cssTransform, transformData){
+                        document.querySelector('#debugOutput').innerText = cssTransform;
+                        console.log(transformData);
+                    }
+                });
+            </script>
+            
+            
+        </div>
+
+        
+        
+        
+    </body>
+</html>

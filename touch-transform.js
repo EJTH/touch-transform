@@ -54,7 +54,7 @@
       }
       if(ongoingTouches.length == 2 && !currentElement){
         var point = getMedianPoint();
-        var element = document.elementFromPoint(point.pageX, point.pageY);
+        var element = document.elementFromPoint(point.clientX, point.clientY);
         startMultiTouchTransform(element);
       }
     }
@@ -66,11 +66,13 @@
     function handleMouseDown(evt){
       var point = evt;
       lastMouse = evt;
-      mousePos = {pageX: evt.pageX, pageY: evt.pageY};
+      mousePos = {clientX: evt.clientX, clientY: evt.clientY};
       if(!currentElement){
-        var element = document.elementFromPoint(point.pageX, point.pageY);
+        var element = document.elementFromPoint(point.clientX, point.clientY);
+        console.log(element);
         startMouseTransform(element);
       }
+      console.log('click');
     }
     /**
      * Handle mouse up event
@@ -86,7 +88,7 @@
      */
     function handleMouseMove(evt){
       lastMouse = mousePos;
-      mousePos = {pageX: evt.pageX, pageY: evt.pageY};
+      mousePos = {clientX: evt.clientX, clientY: evt.clientY};
     }
 
     /**
@@ -94,7 +96,6 @@
      * @param {*} evt 
      */
     function handleKeyDown(evt){
-      console.log(currentElement.__touchTransformOptions);
       if(!currentElement) return;
       if(evt.key == currentElement.__touchTransformOptions.rotateKey){
         scrollMode = 'rotate';
@@ -138,6 +139,11 @@
      * @param {*} evt 
      */
     function handleWheel(evt){
+      if(!currentElement){
+        return; 
+      }
+      evt.preventDefault();
+      evt.stopPropagation();
       if(scrollMode == 'rotate'){
         mouseRot += Math.sign(evt.deltaY);
       }
@@ -190,8 +196,8 @@
      * Helper function for making a copy of the neccesary parts of touch events.
      * @param {*} param0 
      */
-    function copyTouch({ identifier, pageX, pageY }) {
-      return { identifier, pageX, pageY };
+    function copyTouch({ identifier, clientX, clientY }) {
+      return { identifier, clientX, clientY };
     }
     
     /**
@@ -273,7 +279,7 @@
         }
 
         applyCSSTransform(opt.target, state);
-        if(opt.onUpdate) opt.onUpdate(opt.target.transform, opt.target.transform.__touchTransformInfo);
+        if(opt.onUpdate) opt.onUpdate(buildCSSTransform(opt.target.__touchTransformInfo), opt.target.__touchTransformInfo);
         
 
         lastState = state;
@@ -291,8 +297,8 @@
     function  applyCSSTransform(target, state){
       var targetInfo = target.__touchTransformInfo;
       var pos = {
-        x: targetInfo.translation.x + state.pos.pageX - lastState.pos.pageX ,
-        y: targetInfo.translation.y + state.pos.pageY - lastState.pos.pageY
+        x: targetInfo.translation.x + state.pos.clientX - lastState.pos.clientX ,
+        y: targetInfo.translation.y + state.pos.clientY - lastState.pos.clientY
       };
 
       var rotation = targetInfo.rotation + state.rot - lastState.rot;
@@ -364,7 +370,7 @@
       var middle = getMedianPoint();
       var dist = 0;
       ongoingTouches.forEach(touch => {
-        dist += getDistance(middle.pageX, middle.pageY, touch.pageX, touch.pageY);
+        dist += getDistance(middle.clientX, middle.clientY, touch.clientX, touch.clientY);
       });
       return dist / ongoingTouches.length;
     }
@@ -390,11 +396,11 @@
      */
     function findAngle(a,b) {
       var c = {
-        pageX: b.pageX+1,
-        pageY: b.pageY
+        clientX: b.clientX+1,
+        clientY: b.clientY
       }
-      var atanA = Math.atan2(a.pageX - b.pageX, a.pageY - b.pageY);
-      var atanC = Math.atan2(c.pageX - b.pageX, c.pageY - b.pageY);
+      var atanA = Math.atan2(a.clientX - b.clientX, a.clientY - b.clientY);
+      var atanC = Math.atan2(c.clientX - b.clientX, c.clientY - b.clientY);
       var diff = atanC - atanA;
       
       diff *= 180 / Math.PI;
@@ -410,12 +416,12 @@
       var x = 0;
       var y = 0;
       touchList.forEach(touch => {
-        x += touch.pageX;
-        y += touch.pageY;
+        x += touch.clientX;
+        y += touch.clientY;
       });
       x = x / touchList.length;
       y = y / touchList.length;
-      return {pageX: x, pageY: y};
+      return {clientX: x, clientY: y};
     }
 
     /**
@@ -485,7 +491,7 @@
     window.addEventListener('mousemove', handleMouseMove, false);
     window.addEventListener('keydown', handleKeyDown, false);
     window.addEventListener('keyup', handleKeyUp, false);
-    window.addEventListener('wheel', handleWheel, false);
+    window.addEventListener('wheel', handleWheel, { passive:false });
     
     // Start animation loop.
     requestAnimationFrame(updateTransforms);
