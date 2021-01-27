@@ -1,0 +1,20 @@
+{
+  "name": "touch-transform",
+  "version": "1.0.0",
+  "description": "TouchTransform is a simple to use library for utilizing multi-touch gestures and mouse for visual transforms (Translation, rotation and scaling) based on well-established user interactions such as pinch zooming, two finger rotation and movement (ie. translation).\r TouchTransform can perform the transforms automatically through CSS3 transforms, or you can get the data yourself through the `onUpdate` callback if you wish to perform your own transformation (ie. if you are doing your own rendering through HTML5 canvas or would like to use the data for another purpose).",
+  "main": "touch-transform.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "uglifyjs touch-transform.js -o touch-transform.min.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EJTH/touch-translate.git"
+  },
+  "author": "Elias Toft Hansen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/EJTH/touch-translate/issues"
+  },
+  "homepage": "https://github.com/EJTH/touch-translate#readme"
+}
