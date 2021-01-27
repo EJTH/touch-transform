@@ -47,11 +47,14 @@
      * @param {*} evt 
      */
     function handleTouchStart(evt) {
-      var touches = evt.changedTouches;
+      endTransform();
+      ongoingTouches.length = 0;
+      var touches = evt.touches;
       for (var i = 0; i < touches.length; i++) {
         ongoingTouches.push(copyTouch(touches[i]));
       }
-      if(ongoingTouches.length == 2 && !currentElement){
+      
+      if(ongoingTouches.length > 0 && !currentElement){
         var point = getMedianPoint();
         var element = document.elementFromPoint(point.clientX, point.clientY);
         if(startMultiTouchTransform(element)){
@@ -168,6 +171,7 @@
           
         }
       }
+      if(currentElement) evt.preventDefault();
     }
 
     /**
@@ -247,8 +251,6 @@
      * @param {*} element 
      */
     function startMultiTouchTransform(element){
-      isTouch = true;
-      
       while(element){
         if(attachedElements.indexOf(element) > -1){
           break;
@@ -257,15 +259,22 @@
       }
 
       if(!element) return;
-
+      
       lastTouches = JSON.parse(JSON.stringify(ongoingTouches));
-      var target = element.__touchTransformOptions.target;
+      var options = element.__touchTransformOptions;
+      var target = options.target;
+
+      // Cancel unless single touch mode is on
+      if(!options.singleTouch && ongoingTouches.length < 2) return;
+
       if(!target.__touchTransformInfo){
         resetTransformInfo(target);
       }
       lastState = getTouchTransformState();
       currentElement = element;
       
+      isTouch = true;
+
       return true;
     }
 
@@ -279,18 +288,17 @@
         var opt = currentElement.__touchTransformOptions;
 
         var state = isTouch ? getTouchTransformState() : getMouseTransformState();
-        if(!currentElement){ 
-          return; 
-        }
 
         applyCSSTransform(opt.target, state);
-        if(opt.onUpdate) opt.onUpdate(buildCSSTransform(opt.target.__touchTransformInfo), opt.target.__touchTransformInfo);
-        
+        if(opt.onUpdate){
+            var css = buildCSSTransform(opt.target.__touchTransformInfo);
+            opt.onUpdate(css, opt.target.__touchTransformInfo, ongoingTouches);
+        }
 
         lastState = state;
         lastTouches = JSON.parse(JSON.stringify(ongoingTouches));
       } catch(e){
-        console.log(e);
+        console.error(e);
       }
     }
 
@@ -308,7 +316,7 @@
 
       var rotation = targetInfo.rotation + state.rot - lastState.rot;
       
-      var scale = targetInfo.scale * (state.dist / lastState.dist);
+      var scale = state.dist && lastState.dist ? targetInfo.scale * (state.dist / lastState.dist) : targetInfo.scale;
       
       target.__touchTransformInfo = {
         translation: pos,
@@ -374,6 +382,9 @@
     function getTouchMedianDistance(){
       var middle = getMedianPoint();
       var dist = 0;
+      
+      if(ongoingTouches.length == 1) return 0;
+      
       ongoingTouches.forEach(touch => {
         dist += getDistance(middle.clientX, middle.clientY, touch.clientX, touch.clientY);
       });
@@ -384,6 +395,7 @@
      * Retrieves current rotation state from touch interaction
      */
     function getTouchRotation(){
+      if(ongoingTouches.length == 1) return 0;
       var lastTouch = lastTouches[0];
       var touch = ongoingTouches[ongoingTouchIndexById(lastTouch.identifier)];
       if(!touch) endTransform();
@@ -448,7 +460,7 @@
     }
 
     /**
-     * Parse CSS transform
+     * Parse CSS transform string into a useful object.
      * @param {*} transformStr 
      * @param {*} defaults 
      */
@@ -486,10 +498,9 @@
 
     // Attach touch event handlers.
     window.addEventListener('touchstart', handleTouchStart,  { passive:false });
-    window.addEventListener('touchmove', handleTouchMove);
+    window.addEventListener('touchmove', handleTouchMove, { passive:false });
     window.addEventListener('touchend', handleTouchEnd, false);
     window.addEventListener('touchcancel', handleTouchCancel, false);
-
     // Attach mouse event Handlers.
     window.addEventListener('mousedown', handleMouseDown, { passive:false });
     window.addEventListener('mouseup', handleMouseUp, false);

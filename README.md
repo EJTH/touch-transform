@@ -19,7 +19,9 @@ TouchTransform.reset(document.querySelector('#transformableObject'));
 TouchTransform.detach(document.querySelector('#transformableElement'));
 ```
 
-### Custom Target
+### Options
+
+#### Custom target
 If you want to affect another element than the one recieving the gestures, you can use the target option to specify an alternative target. If you set target to false, no CSS3 transforms will be performed.
 
 ```javascript
@@ -28,8 +30,15 @@ TouchTransform.attach(document.body, {
 });
 ```
 
-### Using update Callback
+#### Using update Callback
 If you only want to recieve the transformation data for your own usage, you can use the `onUpdate` callback
+
+#### Changing default keys for rotate / scale
+By default scaling is performed with click+scroll and rotation is performed with click+shift+scroll. If you wish to change this behaviour you can do so with the `scaleKey` and `rotateKey` options. See [MDN Page on Key Values](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values) for valid values.
+
+#### singleTouch mode
+I personally don't like single touch transform in the browser. And for some purposes its not what you want at all!
+For those who wants users to still pan using one touch gestures, you can enable single touch mode by setting the `singleTouch` option to `true`.
 
 ```javascript
 TouchTransform.attach(document.body, {
@@ -43,9 +52,6 @@ TouchTransform.attach(document.body, {
     }
 });
 ```
-
-### Rotate & scale with mouse scroll
-By default scaling is performed with click+scroll and rotation is performed with click+shift+scroll. If you wish to change this behaviour you can do so with the `scaleKey` and `rotateKey` options. See [MDN Page on Key Values](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values) for valid values.
 
 ## Module support
 This library supports AMD if define exists, otherwise it will be available in the window global object.

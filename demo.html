@@ -63,10 +63,12 @@
             </div>
             <pre class="code">
     TouchTransform.attach(document.querySelector('#area'),{
+        singleTouch: true,
         target: document.querySelector('#customTarget')
     });</pre>
             <script>
                 TouchTransform.attach(document.querySelector('#area'),{
+                    singleTouch: true,
                     target: document.querySelector('#customTarget')
                 });
             </script>
@@ -86,6 +88,7 @@
             <pre class="code">
     TouchTransform.attach(document.querySelector('#updateExample'),{
         target: false,
+        singleTouch: true,
         onUpdate: function(cssTransform, transformData){
             document.querySelector('#debugOutput').innerText = cssTransform;
             console.log(transformData);
@@ -94,7 +97,7 @@
             <script>
                 TouchTransform.attach(document.querySelector('#updateExample'),{
                     target: false,
-                    onUpdate: function(cssTransform, transformData){
+                    onUpdate: function(cssTransform, transformData, touches){
                         document.querySelector('#debugOutput').innerText = cssTransform;
                         console.log(transformData);
                     }
